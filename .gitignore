@@ -1,4 +1,6 @@
+# User defined
 *.code-workspace
+/build
 
 # Prerequisites
 *.d
