@@ -13,24 +13,21 @@ static struct
     unsigned core_no;
 } context;
 
-static bool IsFileEmpty(FILE *file, char *read_line, size_t length)
-{
+static bool IsFileEmpty(FILE *file, char *read_line, size_t length) {
     if (fgets(read_line, length, file) == NULL)
         return true;
     
     return false;
 }
 
-static bool IsLineCpuCoreInfo(char *read_line)
-{
+static bool IsLineCpuCoreInfo(char *read_line) {
     if (strncmp(read_line, "cpu", 3) == 0)
         return true;
     
     return false;
 }
 
-static unsigned CountCores()
-{
+static unsigned CountCores() {
     FILE *file = fopen("/proc/stat", "r");
     char read_cpu[5];
     unsigned core_no = 0;
@@ -52,11 +49,10 @@ static unsigned CountCores()
     return core_no;
 }
 
-static bool ReadProcStatFromFile()
-{
+static bool ReadProcStatFromFile() {
     FILE *file = fopen("/proc/stat", "r");
     char read_line[512];
-    CpuData temp_array[context.core_no];
+    CpuCoreData temp_array[context.core_no];
     unsigned core_index = 0;
 
     while(1)
@@ -72,6 +68,8 @@ static bool ReadProcStatFromFile()
                 &temp_array[core_index].irq, &temp_array[core_index].softirq, &temp_array[core_index].steal,
                 &temp_array[core_index].guest, &temp_array[core_index].guest_nice);     
         }
+        
+        core_index++;
     }
 
     fclose(file);

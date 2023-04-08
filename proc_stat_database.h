@@ -14,9 +14,11 @@ typedef struct
     unsigned long steal;
     unsigned long guest;
     unsigned long guest_nice;
-} CpuData;
+} CpuCoreData;
+
 
 void DB_SetCoreNo(unsigned core_no);
 unsigned DB_GetCoreNo(); 
+void DB_CpuDataBufferAllocation();
 
 #endif
