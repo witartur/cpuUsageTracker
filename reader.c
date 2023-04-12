@@ -7,6 +7,7 @@
 
 #include "reader.h"
 #include "proc_stat_database.h"
+#include "printer.h"
 
 static struct
 {
@@ -49,28 +50,60 @@ static unsigned CountCores() {
     return core_no;
 }
 
-static bool ReadProcStatFromFile() {
-    FILE *file = fopen("/proc/stat", "r");
-    char read_line[512];
-    CpuCoreData temp_array[context.core_no];
-    unsigned core_index = 0;
+bool ReadProcStatFromFile() {
 
-    while(1)
+    printf("ReadProcStatFromFile begin\n\n");
+    FILE *file = fopen("/proc/stat", "r");
+    if (file == NULL)
     {
-        if (IsFileEmpty(file, read_line, sizeof(read_line)))
+        printf("File does not exist\n");
+    }
+    
+    char read_line[512];
+    CpuCoreData temp_array[CountCores()];
+    int core_index = -1;
+
+    while(1) {
+        if (IsFileEmpty(file, read_line, sizeof(read_line))) {
+            printf("File is empty\n");
+            fclose(file);
             return false;
-        
-        if (IsLineCpuCoreInfo(read_line))
-        {
-            sscanf(read_line, "%u %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
-                &temp_array[core_index].cpu_id, &temp_array[core_index].user, &temp_array[core_index].nice,
-                &temp_array[core_index].system, &temp_array[core_index].idle, &temp_array[core_index].iowait,
-                &temp_array[core_index].irq, &temp_array[core_index].softirq, &temp_array[core_index].steal,
-                &temp_array[core_index].guest, &temp_array[core_index].guest_nice);     
         }
-        
+
+        if (IsLineCpuCoreInfo(read_line)) {
+
+            int index = 0;
+            temp_array[index].cpu_id = core_index;
+            char bin[6];
+
+            int result = sscanf(read_line, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",
+                bin,
+                &temp_array[index].user, 
+                &temp_array[index].nice,
+                &temp_array[index].system, 
+                &temp_array[index].idle, 
+                &temp_array[index].iowait,
+                &temp_array[index].irq, 
+                &temp_array[index].softirq, 
+                &temp_array[index].steal,
+                &temp_array[index].guest, 
+                &temp_array[index].guest_nice); 
+
+            printf("%s", read_line);
+            printf("CPU line index %d\n", core_index);
+            printf("cpu_id:  %d\n", temp_array[index].cpu_id);
+            printf("bin:  %s\n", bin);
+            printf("user: %lu\n\n", temp_array[index].user);
+            printf("sscanf: %d\n", result);
+        } else {
+            break;
+        }
         core_index++;
     }
+
+    printf("End of whileloop\n");
+
+    PrintRawData(temp_array);
 
     fclose(file);
     return true;  

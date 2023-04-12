@@ -3,7 +3,7 @@
 
 typedef struct
 {
-    unsigned cpu_id;
+    int cpu_id;
     unsigned long user;
     unsigned long nice;
     unsigned long system;

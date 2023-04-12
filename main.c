@@ -3,9 +3,12 @@
 #include <unistd.h>
 #include <pthread.h>
 
+#include "proc_stat_database.h"
+#include "reader.h"
 
+int main() {
+    printf("main begin\n");
+    ReadProcStatFromFile();
 
-int main()
-{
     return 0;
 }

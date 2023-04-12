@@ -20,7 +20,8 @@ void DB_SetCoreNo(unsigned core_no){
 }
 
 unsigned DB_GetCoreNo(){
-    return context.cores_no;
+    // return context.cores_no;
+    return 9;
 }
 
 void DB_CpuDataBufferAllocation() {
