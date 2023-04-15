@@ -29,12 +29,12 @@ static bool InitSingleBuffer(CircularBuffer *cb) {
 
 bool CB_Init() {
     return InitSingleBuffer(&context.buffersTable[BufferTypeReadData])
-        && InitSingleBuffer(&context.buffersTable[BufferTypeAnalisedData]);
+        && InitSingleBuffer(&context.buffersTable[BufferTypeAnalyzedData]);
 }
 
 void CB_Free() {
     free(context.buffersTable[BufferTypeReadData].buffer);
-    free(context.buffersTable[BufferTypeAnalisedData].buffer);
+    free(context.buffersTable[BufferTypeAnalyzedData].buffer);
 }
 
 bool CB_PushBack(CpuCoreData *element, BufferType buffer_type) {

@@ -6,7 +6,7 @@
 
 typedef enum {
     BufferTypeReadData = 0,
-    BufferTypeAnalisedData,
+    BufferTypeAnalyzedData,
     BufferTypeLast,
 } BufferType;
 
@@ -29,4 +29,4 @@ bool CB_PopFront(CpuCoreData *element, BufferType buffer_type);
 
 void CB_Print();
 
-#endif
+#endif  // CIRCULAR_BUFFER_H

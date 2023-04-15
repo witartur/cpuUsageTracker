@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 bool ReaderInit();
+unsigned ReadCoresNo();
 bool ReadProcStatFromFile();
 
 #endif

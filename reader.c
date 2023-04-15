@@ -65,11 +65,13 @@ static unsigned CountCores() {
 bool ReaderInit() {
     unsigned core_no = CountCores();
 
-    if(core_no > 0) {
-        DB_SetCoreNo(core_no);
+    if(core_no > 0)
         return true;
-    }
     return false;
+}
+
+unsigned ReadCoresNo() {
+    return context.core_no;
 }
 
 bool ReadProcStatFromFile() {
@@ -123,7 +125,7 @@ bool ReadProcStatFromFile() {
     }
 
     printf("End of whileloop\n");
-    printf("Push back result: %d\n", CB_PushBack(temp_array, BufferTypeReadData));
+    DB_AddReadProcStatData(temp_array);
 
     fclose(file);
     return true;

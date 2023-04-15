@@ -7,11 +7,17 @@
 #include "reader.h"
 #include "circular_buffer.h"
 
+static bool Init() {
+    return ReaderInit()
+        && DB_Init()
+        && CB_Init();
+}
+
 int main() {
     printf("main begin\n");
 
-    ReaderInit();
-    CB_Init();
+    if(Init() == false)
+        return 0;
 
     ReadProcStatFromFile();
     printf("END OF PROCSTAT");
@@ -20,5 +26,5 @@ int main() {
     CB_Print();
     CB_Free();
 
-    return 0;
+    return 1;
 }

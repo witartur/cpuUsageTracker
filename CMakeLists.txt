@@ -11,6 +11,7 @@ add_library(
     proc_stat_database.c
     circular_buffer.c
     printer.c
+    analyzer.c
 )
 add_executable(cpuTracker main.c)
 target_link_libraries(cpuTracker PRIVATE src)
