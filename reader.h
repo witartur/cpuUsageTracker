@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-bool ReaderInit();
+bool Reader_Init();
 unsigned ReadCoresNo();
 bool ReadProcStatFromFile();
 

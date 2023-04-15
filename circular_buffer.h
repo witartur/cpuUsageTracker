@@ -4,12 +4,6 @@
 #include <stdlib.h>
 #include "proc_stat_database.h"
 
-typedef enum {
-    BufferTypeReadData = 0,
-    BufferTypeAnalyzedData,
-    BufferTypeLast,
-} BufferType;
-
 typedef struct {
     BufferType name;
     void *buffer;
@@ -24,8 +18,8 @@ typedef struct {
 
 bool CB_Init();
 void CB_Free();
-bool CB_PushBack(CpuCoreData *element, BufferType buffer_type);
-bool CB_PopFront(CpuCoreData *element, BufferType buffer_type);
+bool CB_PushBack(void *element, BufferType buffer_type);
+bool CB_PopFront(void *element, BufferType buffer_type);
 
 void CB_Print();
 

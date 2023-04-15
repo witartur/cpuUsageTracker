@@ -2,15 +2,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <limits.h>
+#include <float.h>
 
 #include "proc_stat_database.h"
 #include "reader.h"
 #include "circular_buffer.h"
+#include "analyzer.h"
 
 static bool Init() {
-    return ReaderInit()
+    return Reader_Init()
         && DB_Init()
-        && CB_Init();
+        && CB_Init()
+        && Analyzer_Init();
 }
 
 int main() {
@@ -20,10 +24,14 @@ int main() {
         return 0;
 
     ReadProcStatFromFile();
-    printf("END OF PROCSTAT");
-    ReadProcStatFromFile();
+    AnalyzeData();
 
-    CB_Print();
+    sleep(1);
+
+    ReadProcStatFromFile();
+    AnalyzeData();
+
+    // CB_Print();
     CB_Free();
 
     return 1;

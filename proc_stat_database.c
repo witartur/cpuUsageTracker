@@ -15,31 +15,21 @@ bool DB_Init() {
     context.cores_no = ReadCoresNo();
 }
 
-void DB_SetCoreNo(unsigned core_no) {
-    if(core_no < 1)
-        return;
-    
-    context.cores_no = core_no;
-}
-
 unsigned DB_GetCoreNo() {
     return context.cores_no;
 }
 
-bool DB_AddReadProcStatData(CpuCoreData* cpu_data_table) {
+bool DB_AddDataToBuffer(void* data, BufferType buffer_type) {
     if(context.cores_no < 1)
         return false;
 
-    CB_PushBack(cpu_data_table, BufferTypeReadData);
+    CB_PushBack(data, buffer_type);
     return true;
 }
 
-CpuCoreData* DB_GetReadProcStateData() {
+bool DB_GetDataFromBuffer(void* destination, BufferType buffer_type) {
     if(context.cores_no < 1)
-        return NULL;
+        return false;
 
-    CpuCoreData *cpu_data_table;
-    CB_PopFront(cpu_data_table, BufferTypeReadData);
-    return cpu_data_table;
+    return CB_PopFront(destination, buffer_type);
 }
-

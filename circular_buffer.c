@@ -11,10 +11,14 @@ static struct {
     CircularBuffer buffersTable[BufferTypeLast];
 } context = {0};
 
-static bool InitSingleBuffer(CircularBuffer *cb) {
+static bool InitSincpu_data_tablegleBuffer(CircularBuffer *cb, BufferType buffer_type) {
     cb->max_no_of_elements = BUFFER_SIZE;
     cb->no_of_elements = 0;
-    cb->size_of_element = sizeof(CpuCoreData) * DB_GetCoreNo();
+
+    if(buffer_type == BufferTypeReadData)
+        cb->size_of_element = sizeof(CpuCoreData) * DB_GetCoreNo();
+    else
+        cb->size_of_element = sizeof(double) * DB_GetCoreNo();
 
     cb->buffer = malloc(cb->max_no_of_elements * cb->size_of_element);
     if(cb->buffer == NULL){
@@ -28,8 +32,8 @@ static bool InitSingleBuffer(CircularBuffer *cb) {
 }
 
 bool CB_Init() {
-    return InitSingleBuffer(&context.buffersTable[BufferTypeReadData])
-        && InitSingleBuffer(&context.buffersTable[BufferTypeAnalyzedData]);
+    return InitSingleBuffer(&context.buffersTable[BufferTypeReadData], BufferTypeReadData)
+        && InitSingleBuffer(&context.buffersTable[BufferTypeAnalyzedData], BufferTypeAnalyzedData);
 }
 
 void CB_Free() {
@@ -37,7 +41,7 @@ void CB_Free() {
     free(context.buffersTable[BufferTypeAnalyzedData].buffer);
 }
 
-bool CB_PushBack(CpuCoreData *element, BufferType buffer_type) {
+bool CB_PushBack(void *element, BufferType buffer_type) {
     if(context.buffersTable[buffer_type].no_of_elements == context.buffersTable[buffer_type].max_no_of_elements){
         printf("Buffer is full\n");
         return false;
@@ -45,7 +49,11 @@ bool CB_PushBack(CpuCoreData *element, BufferType buffer_type) {
 
     printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
     memcpy(context.buffersTable[buffer_type].head, element, context.buffersTable[buffer_type].size_of_element);
-    context.buffersTable[buffer_type].head = (CpuCoreData*)context.buffersTable[buffer_type].head + context.buffersTable[buffer_type].size_of_element;
+
+    if(buffer_type == BufferTypeReadData)
+        context.buffersTable[buffer_type].head = (CpuCoreData*)context.buffersTable[buffer_type].head + context.buffersTable[buffer_type].size_of_element;
+    else
+        context.buffersTable[buffer_type].head = (double*)context.buffersTable[buffer_type].head + context.buffersTable[buffer_type].size_of_element;
 
     if(context.buffersTable[buffer_type].head == context.buffersTable[buffer_type].buffer_end)
         context.buffersTable[buffer_type].head = context.buffersTable[buffer_type].buffer;
@@ -53,10 +61,16 @@ bool CB_PushBack(CpuCoreData *element, BufferType buffer_type) {
     context.buffersTable[buffer_type].no_of_elements++;
 
     printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
+
+    CpuCoreData *element2 = element;
+    printf("Circullar buffer\nCPU %d - User: %lu, Nice: %lu, System: %lu, Idle: %lu, IO Wait: %lu, IRQ: %lu, Soft IRQ: %lu, Steal: %lu, Guest: %lu, Guest Nice: %lu\n",
+               element2[0].cpu_id, element2[0].user, element2[0].nice, element2[0].system, element2[0].idle, element2[0].iowait,
+               element2[0].irq, element2[0].softirq, element2[0].steal, element2[0].guest, element2[0].guest_nice);
+
     return true;
 }
 
-bool CB_PopFront(CpuCoreData *element, BufferType buffer_type) {
+bool CB_PopFront(void *element, BufferType buffer_type) {
     if(context.buffersTable[buffer_type].no_of_elements == 0){
         printf("No of elements in buffer is 0\n");
         return false;
@@ -65,7 +79,10 @@ bool CB_PopFront(CpuCoreData *element, BufferType buffer_type) {
     printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
     memcpy(element, context.buffersTable[buffer_type].tail, context.buffersTable[buffer_type].size_of_element);
 
-    context.buffersTable[buffer_type].tail = (CpuCoreData*)context.buffersTable[buffer_type].tail + context.buffersTable[buffer_type].size_of_element;
+    if(buffer_type == BufferTypeReadData)
+        context.buffersTable[buffer_type].tail = (CpuCoreData*)context.buffersTable[buffer_type].tail + context.buffersTable[buffer_type].size_of_element;
+    else
+        context.buffersTable[buffer_type].tail = (double*)context.buffersTable[buffer_type].tail + context.buffersTable[buffer_type].size_of_element;
 
     if(context.buffersTable[buffer_type].tail == context.buffersTable[buffer_type].buffer_end)
         context.buffersTable[buffer_type].tail = context.buffersTable[buffer_type].buffer;

@@ -3,6 +3,12 @@
 
 #include <stdbool.h>
 
+typedef enum {
+    BufferTypeReadData = 0,
+    BufferTypeAnalyzedData,
+    BufferTypeLast,
+} BufferType;
+
 typedef struct
 {
     int cpu_id;
@@ -19,12 +25,9 @@ typedef struct
 } CpuCoreData;
 
 bool DB_Init();
+unsigned DB_GetCoreNo();
 
-void DB_SetCoreNo(unsigned core_no);
-unsigned DB_GetCoreNo(); 
-
-bool DB_AddReadProcStatData(CpuCoreData* cpu_data_table);
-CpuCoreData* DB_GetReadProcStateData();
-
+bool DB_AddDataToBuffer(void* data, BufferType buffer_type);
+bool DB_GetDataFromBuffer(void* destination, BufferType buffer_type);
 
 #endif  // PROC_STAT_DATABASE_H

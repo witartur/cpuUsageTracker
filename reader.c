@@ -24,8 +24,6 @@ static bool IsEndOfFile(FILE *file, char *read_line, size_t length) {
 }
 
 static bool IsLineCpuCoreInfo(char *read_line) {
-    printf("STRNCMP: %d\n", strncmp(read_line, "cpu", 3));
-
     if (strncmp(read_line, "cpu", 3) == 0)
         return true;
 
@@ -62,7 +60,7 @@ static unsigned CountCores() {
     return core_no;
 }
 
-bool ReaderInit() {
+bool Reader_Init() {
     unsigned core_no = CountCores();
 
     if(core_no > 0)
@@ -119,13 +117,11 @@ bool ReadProcStatFromFile() {
         printf("cpu_id:  %d\n", temp_array[index].cpu_id);
         printf("bin:  %s\n", bin);
         printf("user: %lu\n\n", temp_array[index].user);
-        printf("sscanf: %d\n", result);
-
         core_index++;
     }
 
     printf("End of whileloop\n");
-    DB_AddReadProcStatData(temp_array);
+    DB_AddDataToBuffer(temp_array, BufferTypeReadData);
 
     fclose(file);
     return true;
