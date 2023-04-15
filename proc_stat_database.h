@@ -19,6 +19,6 @@ typedef struct
 
 void DB_SetCoreNo(unsigned core_no);
 unsigned DB_GetCoreNo(); 
-void DB_CpuDataBufferAllocation();
+// void DB_CpuDataBufferAllocation();
 
 #endif
