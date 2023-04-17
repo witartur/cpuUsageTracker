@@ -2,6 +2,7 @@
 *.code-workspace
 /.vscode
 /build
+.editorconfig
 
 # Prerequisites
 *.d

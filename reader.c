@@ -74,7 +74,7 @@ unsigned ReadCoresNo() {
 
 bool ReadProcStatFromFile() {
 
-    printf("ReadProcStatFromFile begin\n\n");
+    // printf("ReadProcStatFromFile begin\n\n");
     FILE *file = fopen("/proc/stat", "r");
     if (file == NULL)
     {
@@ -112,15 +112,15 @@ bool ReadProcStatFromFile() {
             &temp_array[index].guest,
             &temp_array[index].guest_nice);
 
-        printf("---------Read proc stat data---------\n");
-        printf("CPU line index %d\n", core_index);
-        printf("cpu_id:  %d\n", temp_array[index].cpu_id);
-        printf("bin:  %s\n", bin);
-        printf("user: %lu\n\n", temp_array[index].user);
+        // printf("---------Read proc stat data---------\n");
+        // printf("CPU line index %d\n", core_index);
+        // printf("cpu_id:  %d\n", temp_array[index].cpu_id);
+        // printf("bin:  %s\n", bin);
+        // printf("user: %lu\n\n", temp_array[index].user);
         core_index++;
     }
 
-    printf("End of whileloop\n");
+    // printf("End of whileloop\n");
     DB_AddDataToBuffer(temp_array, BufferTypeReadData);
 
     fclose(file);

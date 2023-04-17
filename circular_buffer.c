@@ -11,7 +11,7 @@ static struct {
     CircularBuffer buffersTable[BufferTypeLast];
 } context = {0};
 
-static bool InitSincpu_data_tablegleBuffer(CircularBuffer *cb, BufferType buffer_type) {
+static bool InitSingleBuffer(CircularBuffer *cb, BufferType buffer_type) {
     cb->max_no_of_elements = BUFFER_SIZE;
     cb->no_of_elements = 0;
 
@@ -47,7 +47,7 @@ bool CB_PushBack(void *element, BufferType buffer_type) {
         return false;
     }
 
-    printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
+    // printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
     memcpy(context.buffersTable[buffer_type].head, element, context.buffersTable[buffer_type].size_of_element);
 
     if(buffer_type == BufferTypeReadData)
@@ -60,12 +60,20 @@ bool CB_PushBack(void *element, BufferType buffer_type) {
 
     context.buffersTable[buffer_type].no_of_elements++;
 
-    printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
+    // printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
 
-    CpuCoreData *element2 = element;
-    printf("Circullar buffer\nCPU %d - User: %lu, Nice: %lu, System: %lu, Idle: %lu, IO Wait: %lu, IRQ: %lu, Soft IRQ: %lu, Steal: %lu, Guest: %lu, Guest Nice: %lu\n",
-               element2[0].cpu_id, element2[0].user, element2[0].nice, element2[0].system, element2[0].idle, element2[0].iowait,
-               element2[0].irq, element2[0].softirq, element2[0].steal, element2[0].guest, element2[0].guest_nice);
+    if(buffer_type == BufferTypeReadData) {
+        CpuCoreData *element2 = element;
+        printf("PUSH\nCircullar buffer\nCPU %d - User: %lu, Nice: %lu, System: %lu, Idle: %lu, IO Wait: %lu, IRQ: %lu, Soft IRQ: %lu, Steal: %lu, Guest: %lu, Guest Nice: %lu\n",
+                element2[0].cpu_id, element2[0].user, element2[0].nice, element2[0].system, element2[0].idle, element2[0].iowait,
+                element2[0].irq, element2[0].softirq, element2[0].steal, element2[0].guest, element2[0].guest_nice);
+    } else {
+        double *element3 = element;
+        printf("PUSH\nCPU:\t\t");
+        for(int i = 0; i < 9; i++)
+            printf("%f\t", element3[i]);
+        printf("\n");
+    }
 
     return true;
 }
@@ -76,7 +84,20 @@ bool CB_PopFront(void *element, BufferType buffer_type) {
         return false;
     }
 
-    printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
+    if(buffer_type == BufferTypeReadData) {
+        CpuCoreData *element2 = element;
+        printf("POP\nCircullar buffer\nCPU %d - User: %lu, Nice: %lu, System: %lu, Idle: %lu, IO Wait: %lu, IRQ: %lu, Soft IRQ: %lu, Steal: %lu, Guest: %lu, Guest Nice: %lu\n",
+                element2[0].cpu_id, element2[0].user, element2[0].nice, element2[0].system, element2[0].idle, element2[0].iowait,
+                element2[0].irq, element2[0].softirq, element2[0].steal, element2[0].guest, element2[0].guest_nice);
+    } else {
+        double *element3 = element;
+        printf("POP\nCPU:\t\t");
+        for(int i = 0; i < 9; i++)
+            printf("%f\t", element3[i]);
+        printf("\n");
+    }
+
+    // printf("No of buffer elements: %lu\n", context.buffersTable[buffer_type].no_of_elements);
     memcpy(element, context.buffersTable[buffer_type].tail, context.buffersTable[buffer_type].size_of_element);
 
     if(buffer_type == BufferTypeReadData)

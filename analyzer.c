@@ -48,21 +48,21 @@ static double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
     unsigned long total_diff = total - prev_total;
     unsigned long idle_diff = idle - prev_idle;
 
-    printf("Total diff: %lu, Idle diff: %lu\n", total_diff, idle_diff);
+    // printf("Total diff: %lu, Idle diff: %lu\n", total_diff, idle_diff);
 
     double cpu_percentage = ((double)total_diff - (double)idle_diff)*100/(double)total_diff;
-    printf("cpu: %f\n", cpu_percentage);
+    // printf("cpu: %f\n", cpu_percentage);
 
     return cpu_percentage;
 }
 
 void AnalyzeData() {
-    CpuCoreData* cpu_data = malloc(sizeof(CpuCoreData) * context.core_no);
+    CpuCoreData *cpu_data = malloc(sizeof(CpuCoreData) * context.core_no);
     bool result = DB_GetDataFromBuffer(cpu_data, BufferTypeReadData);
 
-    printf("Analyzer\nCPU %d - User: %lu, Nice: %lu, System: %lu, Idle: %lu, IO Wait: %lu, IRQ: %lu, Soft IRQ: %lu, Steal: %lu, Guest: %lu, Guest Nice: %lu\n",
-               cpu_data[0].cpu_id, cpu_data[0].user, cpu_data[0].nice, cpu_data[0].system, cpu_data[0].idle, cpu_data[0].iowait,
-               cpu_data[0].irq, cpu_data[0].softirq, cpu_data[0].steal, cpu_data[0].guest, cpu_data[0].guest_nice);
+    // printf("Analyzer\nCPU %d - User: %lu, Nice: %lu, System: %lu, Idle: %lu, IO Wait: %lu, IRQ: %lu, Soft IRQ: %lu, Steal: %lu, Guest: %lu, Guest Nice: %lu\n",
+    //            cpu_data[0].cpu_id, cpu_data[0].user, cpu_data[0].nice, cpu_data[0].system, cpu_data[0].idle, cpu_data[0].iowait,
+    //            cpu_data[0].irq, cpu_data[0].softirq, cpu_data[0].steal, cpu_data[0].guest, cpu_data[0].guest_nice);
 
     if(result == false) {
         printf("No data in buffer\n");

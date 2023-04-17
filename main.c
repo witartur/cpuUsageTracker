@@ -9,6 +9,7 @@
 #include "reader.h"
 #include "circular_buffer.h"
 #include "analyzer.h"
+#include "printer.h"
 
 static bool Init() {
     return Reader_Init()
@@ -23,15 +24,22 @@ int main() {
     if(Init() == false)
         return 0;
 
+    int counter;
+
+    for(counter = 1; counter <5; counter++) {
+    printf("*********ReadProcStatFromFile %d begin*******\n", counter);
     ReadProcStatFromFile();
+
+    printf("*********AnalyzeData %d begin*******\n", counter);
     AnalyzeData();
 
-    sleep(1);
+    // printf("*********Printer %d begin*******\n", counter);
+    // Printer();
 
-    ReadProcStatFromFile();
-    AnalyzeData();
+    sleep(2);
+    }
 
-    // CB_Print();
+    printf("*********CB*******\n");
     CB_Free();
 
     return 1;
