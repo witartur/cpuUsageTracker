@@ -26,15 +26,16 @@ int main() {
 
     int counter;
 
-    for(counter = 1; counter <5; counter++) {
+    sleep(2);
+    for(counter = 1; counter <=5; counter++) {
     printf("*********ReadProcStatFromFile %d begin*******\n", counter);
     ReadProcStatFromFile();
 
     printf("*********AnalyzeData %d begin*******\n", counter);
     AnalyzeData();
 
-    // printf("*********Printer %d begin*******\n", counter);
-    // Printer();
+    printf("*********Printer %d begin*******\n", counter);
+    Printer();
 
     sleep(2);
     }
