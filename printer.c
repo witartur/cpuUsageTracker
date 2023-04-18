@@ -17,14 +17,13 @@ void Printer() {
       return;
     }
 
-    // system("clear");
-    printf("\n\n");
+    system("clear");
+    printf("\n");
     printf("-------   CPU USAGE TRACKER   -------\n\n");
-
-    int i;
     printf("   CPU: %.2f%%\n\n", analized_cpu_data[0]);
     printf("CORE:\n");
-    for (i = 1; i < core_no; i++) {
+
+    for (int i = 1; i < core_no; i++) {
       printf("CPU%d: %.2f%%\n", i-1, analized_cpu_data[i]);
     }
 

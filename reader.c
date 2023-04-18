@@ -11,8 +11,7 @@
 #include "circular_buffer.h"
 
 #define BUFFER_READ 1
-static struct
-{
+static struct {
     unsigned core_no;
 } context;
 
@@ -56,7 +55,6 @@ static unsigned CountCores() {
     fclose(file);
 
     context.core_no = core_no;
-    printf("Core no: %d\n", core_no);
     return core_no;
 }
 
@@ -68,19 +66,15 @@ bool Reader_Init() {
     return false;
 }
 
-unsigned ReadCoresNo() {
+unsigned Reader_GetCoreNo() {
     return context.core_no;
 }
 
-bool ReadProcStatFromFile() {
-
-    // printf("ReadProcStatFromFile begin\n\n");
+bool Reader_GetProcStatFromFile() {
     FILE *file = fopen("/proc/stat", "r");
-    if (file == NULL)
-    {
+    if (file == NULL) {
         printf("File does not exist\n");
     }
-
     char read_line[512];
     CpuCoreData temp_array[context.core_no];
     int core_index = -1;
@@ -112,18 +106,9 @@ bool ReadProcStatFromFile() {
             &temp_array[index].guest,
             &temp_array[index].guest_nice);
 
-        // printf("---------Read proc stat data---------\n");
-        // printf("CPU line index %d\n", core_index);
-        // printf("cpu_id:  %d\n", temp_array[index].cpu_id);
-        // printf("bin:  %s\n", bin);
-        // printf("user: %lu\n\n", temp_array[index].user);
         core_index++;
     }
-
-    // printf("End of whileloop\n");
     DB_AddDataToBuffer(temp_array, BufferTypeReadData);
-
     fclose(file);
     return true;
 }
-

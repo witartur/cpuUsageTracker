@@ -24,23 +24,13 @@ int main() {
     if(Init() == false)
         return 0;
 
-    int counter;
+    for(int counter = 1; counter <=5; counter++) {
+        Reader_GetProcStatFromFile();
+        AnalyzeData();
+        Printer();
 
-    sleep(2);
-    for(counter = 1; counter <=5; counter++) {
-    printf("*********ReadProcStatFromFile %d begin*******\n", counter);
-    ReadProcStatFromFile();
-
-    printf("*********AnalyzeData %d begin*******\n", counter);
-    AnalyzeData();
-
-    printf("*********Printer %d begin*******\n", counter);
-    Printer();
-
-    sleep(2);
+        sleep(2);
     }
-
-    printf("*********CB*******\n");
     CB_Free();
 
     return 1;

@@ -9,8 +9,7 @@ typedef enum {
     BufferTypeLast,
 } BufferType;
 
-typedef struct
-{
+typedef struct {
     int cpu_id;
     unsigned long user;
     unsigned long nice;
@@ -26,7 +25,6 @@ typedef struct
 
 bool DB_Init();
 unsigned DB_GetCoreNo();
-
 bool DB_AddDataToBuffer(void* data, BufferType buffer_type);
 bool DB_GetDataFromBuffer(void* destination, BufferType buffer_type);
 

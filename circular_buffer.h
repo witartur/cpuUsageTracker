@@ -15,12 +15,9 @@ typedef struct {
     void *tail;
 } CircularBuffer;
 
-
 bool CB_Init();
 void CB_Free();
 bool CB_PushBack(void *element, BufferType buffer_type);
 bool CB_PopFront(void *element, BufferType buffer_type);
-
-void CB_Print();
 
 #endif  // CIRCULAR_BUFFER_H

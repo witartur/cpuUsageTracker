@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 bool Reader_Init();
-unsigned ReadCoresNo();
-bool ReadProcStatFromFile();
+unsigned Reader_GetCoreNo();
+bool Reader_GetProcStatFromFile();
 
-#endif
+#endif //READER_H

@@ -6,13 +6,12 @@
 #include "reader.h"
 
 
-static struct
-{
+static struct {
     unsigned cores_no;
 } context = {0};
 
 bool DB_Init() {
-    context.cores_no = ReadCoresNo();
+    context.cores_no = Reader_GetCoreNo();
 }
 
 unsigned DB_GetCoreNo() {
