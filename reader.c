@@ -108,7 +108,7 @@ bool Reader_GetProcStatFromFile() {
 
         core_index++;
     }
-    DB_AddDataToBuffer(temp_array, BufferTypeReadData);
+    DB_AddDataToReadDataBuffer(temp_array);
     fclose(file);
     return true;
 }

@@ -46,7 +46,7 @@ static double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
 
 void AnalyzeData() {
     CpuCoreData *cpu_data = malloc(sizeof(CpuCoreData) * context.core_no);
-    bool result = DB_GetDataFromBuffer(cpu_data, BufferTypeReadData);
+    bool result = DB_GetDataFromReadDataBuffer(cpu_data);
 
     if(result == false) {
         printf("No data in buffer\n");
@@ -58,7 +58,7 @@ void AnalyzeData() {
         result_array[i] = Calculate(context.previous_cpu_each_core_data[i], cpu_data[i]);
     }
 
-    DB_AddDataToBuffer(result_array, BufferTypeAnalyzedData);
+    DB_AddDataToAnalyzedDataBuffer(result_array);
     memcpy(context.previous_cpu_each_core_data, cpu_data, context.core_no * sizeof(CpuCoreData));
     free(cpu_data);
 }

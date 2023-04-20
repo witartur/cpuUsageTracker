@@ -18,20 +18,50 @@ static bool Init() {
         && Analyzer_Init();
 }
 
+static bool Deinit() {
+    return CB_Free && DB_Denit;
+}
+
+void* ThreadReader() {
+    while(1) {
+        Reader_GetProcStatFromFile();
+        sleep(1);
+    }
+}
+
+void* ThreadAnalyzer() {
+    while(1) {
+        AnalyzeData();
+    }
+}
+
+void* ThreadPrinter() {
+    while (1) {
+        Printer();
+    }
+}
+
 int main() {
-    printf("main begin\n");
+    pthread_t t1, t2, t3;
 
     if(Init() == false)
         return 0;
 
-    for(int counter = 1; counter <=5; counter++) {
-        Reader_GetProcStatFromFile();
-        AnalyzeData();
-        Printer();
+    if (pthread_create(&t1, NULL, &ThreadReader, NULL) != 0)
+        printf("Handle Error");
 
-        sleep(2);
-    }
-    CB_Free();
+    if (pthread_create(&t2, NULL, &ThreadAnalyzer, NULL) != 0)
+        printf("Handle Error");
+
+    if (pthread_create(&t3, NULL, &ThreadPrinter, NULL) != 0)
+        printf("Handle Error");
+
+        pthread_join(t1, NULL);
+        pthread_join(t2, NULL);
+        pthread_join(t3, NULL);
+
+    if(Deinit() == false)
+        return 0;
 
     return 1;
 }

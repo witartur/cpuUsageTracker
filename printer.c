@@ -3,14 +3,13 @@
 
 #include "printer.h"
 #include "proc_stat_database.h"
-#include "circular_buffer.h"
 
 
 void Printer() {
     unsigned core_no = DB_GetCoreNo();
     printf("Printer core_no: %d\n", core_no);
     double *analized_cpu_data = malloc(sizeof(double) * core_no);
-    bool result = DB_GetDataFromBuffer(analized_cpu_data, BufferTypeAnalyzedData);
+    bool result = DB_GetDataFromAnalyzedDataBuffer(analized_cpu_data);
 
     if(result == false) {
       printf("No data in buffer\n");

@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+#define BUFFER_SIZE 5
 typedef enum {
     BufferTypeReadData = 0,
     BufferTypeAnalyzedData,
@@ -24,8 +25,11 @@ typedef struct {
 } CpuCoreData;
 
 bool DB_Init();
+bool DB_Denit();
 unsigned DB_GetCoreNo();
-bool DB_AddDataToBuffer(void* data, BufferType buffer_type);
-bool DB_GetDataFromBuffer(void* destination, BufferType buffer_type);
+bool DB_AddDataToReadDataBuffer(CpuCoreData *data);
+bool DB_AddDataToAnalyzedDataBuffer(double *data);
+bool DB_GetDataFromReadDataBuffer(void* destination);
+bool DB_GetDataFromAnalyzedDataBuffer(void* destination);
 
 #endif  // PROC_STAT_DATABASE_H

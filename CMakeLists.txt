@@ -12,6 +12,9 @@ elseif ("$ENV{CC}" MATCHES "gcc")
 
 endif()
 
+# set(CMAKE_THREAD_LIBS_INIT)
+# set(MAKE_USE_PTHREADS_INIT)
+
 add_library(
     src
     reader.c
