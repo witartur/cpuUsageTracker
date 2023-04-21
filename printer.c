@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "printer.h"
 #include "proc_stat_database.h"
@@ -7,7 +8,6 @@
 
 void Printer() {
     unsigned core_no = DB_GetCoreNo();
-    printf("Printer core_no: %d\n", core_no);
     double *analized_cpu_data = malloc(sizeof(double) * core_no);
     bool result = DB_GetDataFromAnalyzedDataBuffer(analized_cpu_data);
 
@@ -17,11 +17,10 @@ void Printer() {
     }
 
     system("clear");
-    printf("\n");
+    printf("Termination command: kill -TERM %d\n\n", getpid());
     printf("-------   CPU USAGE TRACKER   -------\n\n");
-    printf("   CPU: %.2f%%\n\n", analized_cpu_data[0]);
-    printf("CORE:\n");
 
+    printf("\tCPU: %.2f%%\n\n", analized_cpu_data[0]);
     for (int i = 1; i < core_no; i++) {
       printf("CPU%d: %.2f%%\n", i-1, analized_cpu_data[i]);
     }

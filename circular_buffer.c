@@ -52,9 +52,6 @@ bool CB_PushBack(void *element, BufferType buffer_type) {
         context.buffersTable[buffer_type].head = context.buffersTable[buffer_type].buffer;
 
     context.buffersTable[buffer_type].no_of_elements++;
-
-    printf("PushBack END No of elements READ_DATA_BUFFER: %ld", context.buffersTable[BufferTypeReadData].no_of_elements);
-    printf("PushBack END No of elements ANALYZED_DATA_BUFFER: %ld", context.buffersTable[BufferTypeAnalyzedData].no_of_elements);
     return true;
 }
 
