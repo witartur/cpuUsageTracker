@@ -25,7 +25,7 @@ typedef struct {
 } CpuCoreData;
 
 bool DB_Init();
-bool DB_Denit();
+bool DB_DeInit();
 unsigned DB_GetCoreNo();
 bool DB_AddDataToReadDataBuffer(CpuCoreData *data);
 bool DB_AddDataToAnalyzedDataBuffer(double *data);

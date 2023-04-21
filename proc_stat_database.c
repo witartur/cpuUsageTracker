@@ -30,7 +30,7 @@ bool DB_Init() {
     return result;
 }
 
-bool DB_Denit() {
+bool DB_DeInit() {
     bool result = pthread_mutex_destroy(&context.mutex_buff_read_data) == 0
         && pthread_mutex_destroy(&context.mutex_buff_analyzed_data) == 0
         && sem_destroy(&context.sem_buff_read_data_empty) == 0

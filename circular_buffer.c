@@ -71,3 +71,8 @@ bool CB_PopFront(void *element, BufferType buffer_type) {
 
     return true;
 }
+
+// for utests
+int CB_GetNoOfElements(BufferType buffer_type) {
+    return context.buffersTable[buffer_type].no_of_elements;
+}

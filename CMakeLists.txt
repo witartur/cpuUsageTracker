@@ -24,4 +24,7 @@ add_library(
     analyzer.c
 )
 add_executable(cpuTracker main.c)
+add_executable(unitTests test.c)
+
 target_link_libraries(cpuTracker PRIVATE src)
+target_link_libraries(unitTests PRIVATE src)

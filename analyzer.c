@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "analyzer.h"
-#include "proc_stat_database.h"
 
 static struct {
     unsigned core_no;
@@ -18,19 +17,19 @@ bool Analyzer_Init() {
     if (context.previous_cpu_each_core_data == NULL) {
         return false;
     }
-    
+
     memset(context.previous_cpu_each_core_data, 0, sizeof(CpuCoreData) * context.core_no);
     return true;
 }
 
-static double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
+double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
     unsigned long prev_idle = prev_element.idle + prev_element.iowait;
     unsigned long idle = new_element.idle + new_element.iowait;
 
-    unsigned long prev_non_idle = prev_element.user + prev_element.nice + prev_element.system 
+    unsigned long prev_non_idle = prev_element.user + prev_element.nice + prev_element.system
         + prev_element.irq + prev_element.softirq + prev_element.steal;
 
-    unsigned long non_idle = new_element.user + new_element.nice + new_element.system 
+    unsigned long non_idle = new_element.user + new_element.nice + new_element.system
         + new_element.irq + new_element.softirq + new_element.steal;
 
     unsigned long prev_total = prev_idle + prev_non_idle;
@@ -40,7 +39,6 @@ static double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
     unsigned long idle_diff = idle - prev_idle;
 
     double cpu_percentage = ((double)total_diff - (double)idle_diff)*100/(double)total_diff;
-
     return cpu_percentage;
 }
 

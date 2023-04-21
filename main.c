@@ -27,7 +27,7 @@ static bool Init() {
 }
 
 static bool Deinit() {
-    return CB_Free && DB_Denit;
+    return CB_Free && DB_DeInit;
 }
 
 void* ThreadReader() {
