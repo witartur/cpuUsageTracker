@@ -140,6 +140,7 @@ static void test_Analyzer() {
     test_CalculationsShouldBeIncorrect();
 }
 
+
 int main() {
     test_CircularBuffer();
     test_Analyzer();

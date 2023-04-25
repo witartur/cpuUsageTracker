@@ -27,6 +27,8 @@ bool DB_Init() {
         && sem_init(&context.sem_buff_analyzed_data_full, 0, 0) == 0;
 
     context.cores_no = Reader_GetCoreNo();
+    CB_Init();
+
     return result;
 }
 
@@ -37,6 +39,9 @@ bool DB_DeInit() {
         && sem_destroy(&context.sem_buff_read_data_full) == 0
         && sem_destroy(&context.sem_buff_analyzed_data_empty) == 0
         && sem_destroy(&context.sem_buff_analyzed_data_full) == 0;
+
+    CB_Free();
+    return result;
 }
 
 unsigned DB_GetCoreNo() {
