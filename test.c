@@ -61,6 +61,8 @@ static void SetCoreNoInDBContext() {
 static void test_CircularBuffer() {
     SetCoreNoInDBContext();
     CB_Init(BufferTypeReadData);
+    CB_Init(BufferTypeAnalyzedData);
+    CB_Init(BufferTypeLogger);
 
     test_ReadElementPushedAndPopCorectly();
 
