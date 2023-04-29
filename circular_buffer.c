@@ -4,23 +4,19 @@
 
 #include "circular_buffer.h"
 #include "proc_stat_database.h"
+#include "logger.h"
 
 static struct {
     CircularBuffer buffersTable[BufferTypeLast];
 } context = {0};
 
-static bool InitSingleBuffer(CircularBuffer *cb, BufferType buffer_type) {
+static bool InitSingleBuffer(CircularBuffer *cb, size_t element_size) {
     cb->max_no_of_elements = BUFFER_SIZE;
     cb->no_of_elements = 0;
-
-    if(buffer_type == BufferTypeReadData)
-        cb->size_of_element = sizeof(CpuCoreData) * DB_GetCoreNo();
-    else
-        cb->size_of_element = sizeof(double) * DB_GetCoreNo();
+    cb->size_of_element = element_size;
 
     cb->buffer = malloc(cb->max_no_of_elements * cb->size_of_element);
-    if(cb->buffer == NULL){
-        printf("CANNOT ALLOCATE BUFFER MEMORY");
+    if(cb->buffer == NULL) {
         return false;
     }
     cb->buffer_end = (__uint8_t *)cb->buffer + cb->max_no_of_elements * cb->size_of_element;
@@ -29,22 +25,35 @@ static bool InitSingleBuffer(CircularBuffer *cb, BufferType buffer_type) {
     return true;
 }
 
-bool CB_Init() {
-    return InitSingleBuffer(&context.buffersTable[BufferTypeReadData], BufferTypeReadData)
-        && InitSingleBuffer(&context.buffersTable[BufferTypeAnalyzedData], BufferTypeAnalyzedData);
+bool CB_Init(BufferType buffer_type) {
+    switch (buffer_type)
+    {
+    case BufferTypeReadData:
+        InitSingleBuffer(&context.buffersTable[BufferTypeReadData], sizeof(CpuCoreData) * DB_GetCoreNo());
+        return true;
+    case BufferTypeAnalyzedData:
+        InitSingleBuffer(&context.buffersTable[BufferTypeAnalyzedData], sizeof(double) * DB_GetCoreNo());
+        return true;
+    case BufferTypeLogger:
+        InitSingleBuffer(&context.buffersTable[BufferTypeLogger], MAX_MSG_SIZE * sizeof(char));
+        return true;
+    default:
+        return false;
+    }
 }
 
 void CB_Free() {
-    free(context.buffersTable[BufferTypeReadData].buffer);
-    free(context.buffersTable[BufferTypeAnalyzedData].buffer);
+    if(context.buffersTable[BufferTypeReadData].buffer != NULL)
+        free(context.buffersTable[BufferTypeReadData].buffer);
+
+    if(context.buffersTable[BufferTypeAnalyzedData].buffer != NULL)
+        free(context.buffersTable[BufferTypeAnalyzedData].buffer);
+    
+    if(context.buffersTable[BufferTypeLogger].buffer != NULL)
+        free(context.buffersTable[BufferTypeLogger].buffer);
 }
 
-bool CB_PushBack(void *element, BufferType buffer_type) {
-    if(context.buffersTable[buffer_type].no_of_elements == context.buffersTable[buffer_type].max_no_of_elements){
-        printf("Buffer is full\n");
-        return false;
-    }
-
+void CB_PushBack(void *element, BufferType buffer_type) {
     memcpy(context.buffersTable[buffer_type].head, element, context.buffersTable[buffer_type].size_of_element);
     context.buffersTable[buffer_type].head = (__uint8_t*)context.buffersTable[buffer_type].head + context.buffersTable[buffer_type].size_of_element;
 
@@ -52,15 +61,9 @@ bool CB_PushBack(void *element, BufferType buffer_type) {
         context.buffersTable[buffer_type].head = context.buffersTable[buffer_type].buffer;
 
     context.buffersTable[buffer_type].no_of_elements++;
-    return true;
 }
 
-bool CB_PopFront(void *element, BufferType buffer_type) {
-    if(context.buffersTable[buffer_type].no_of_elements == 0){
-        printf("No of elements in buffer is 0\n");
-        return false;
-    }
-
+void CB_PopFront(void *element, BufferType buffer_type) {
     memcpy(element, context.buffersTable[buffer_type].tail, context.buffersTable[buffer_type].size_of_element);
     context.buffersTable[buffer_type].tail = (__uint8_t*)context.buffersTable[buffer_type].tail + context.buffersTable[buffer_type].size_of_element;
 
@@ -68,8 +71,6 @@ bool CB_PopFront(void *element, BufferType buffer_type) {
         context.buffersTable[buffer_type].tail = context.buffersTable[buffer_type].buffer;
 
     context.buffersTable[buffer_type].no_of_elements--;
-
-    return true;
 }
 
 // for utests

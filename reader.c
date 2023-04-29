@@ -8,7 +8,7 @@
 #include "reader.h"
 #include "proc_stat_database.h"
 #include "printer.h"
-#include "circular_buffer.h"
+#include "logger.h"
 
 #define BUFFER_READ 1
 static struct {
@@ -33,7 +33,7 @@ static unsigned CountCores() {
     FILE *file = fopen("/proc/stat", "r");
 
     if(file == NULL) {
-        printf("Can't open file\n");
+        Logger_Log("READER: Can't open /proc/stat file\n");
         return 0;
     }
 
@@ -42,10 +42,8 @@ static unsigned CountCores() {
 
     while(1)
     {
-        if(IsEndOfFile(file, read_cpu, sizeof(read_cpu))) {
-            printf("End of file\n");
+        if(IsEndOfFile(file, read_cpu, sizeof(read_cpu)))
             break;
-        }
 
         if(IsLineCpuCoreInfo(read_cpu) == false)
             break;
@@ -63,6 +61,8 @@ bool Reader_Init() {
 
     if(core_no > 0)
         return true;
+    
+    Logger_Log("READER: Init Error");
     return false;
 }
 
@@ -72,16 +72,17 @@ unsigned Reader_GetCoreNo() {
 
 bool Reader_GetProcStatFromFile() {
     FILE *file = fopen("/proc/stat", "r");
+
     if (file == NULL) {
-        printf("File does not exist\n");
+        Logger_Log("READER: Can't open /proc/stat file\n");
     }
+
     char read_line[512];
     CpuCoreData temp_array[context.core_no];
     int core_index = -1;
 
     while(1) {
         if (IsEndOfFile(file, read_line, sizeof(read_line))) {
-            printf("EOF\n");
             fclose(file);
             return false;
         }
@@ -108,7 +109,10 @@ bool Reader_GetProcStatFromFile() {
 
         core_index++;
     }
+
     DB_AddDataToReadDataBuffer(temp_array);
+    Logger_Log("READER: Data read and stored successfully");
+
     fclose(file);
     return true;
 }

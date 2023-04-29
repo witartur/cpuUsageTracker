@@ -15,10 +15,10 @@ typedef struct {
     void *tail;
 } CircularBuffer;
 
-bool CB_Init();
+bool CB_Init(BufferType buffer_type);
 void CB_Free();
-bool CB_PushBack(void *element, BufferType buffer_type);
-bool CB_PopFront(void *element, BufferType buffer_type);
+void CB_PushBack(void *element, BufferType buffer_type);
+void CB_PopFront(void *element, BufferType buffer_type);
 
 // for utests
 int CB_GetNoOfElements(BufferType buffer_type);

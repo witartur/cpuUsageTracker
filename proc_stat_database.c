@@ -6,7 +6,7 @@
 #include "proc_stat_database.h"
 #include "circular_buffer.h"
 #include "reader.h"
-
+#include "logger.h"
 
 static struct {
     unsigned cores_no;
@@ -26,72 +26,70 @@ bool DB_Init() {
         && sem_init(&context.sem_buff_analyzed_data_empty, 0, BUFFER_SIZE) == 0
         && sem_init(&context.sem_buff_analyzed_data_full, 0, 0) == 0;
 
+    if(result == false)
+        Logger_Log("DB: Init Error");
+
     context.cores_no = Reader_GetCoreNo();
-    CB_Init();
+    
+    result = CB_Init(BufferTypeReadData) && CB_Init(BufferTypeAnalyzedData);
+
+    if(result == false)
+        Logger_Log("DB: Init Error, Can't allocate buffer memory");
 
     return result;
 }
 
-bool DB_DeInit() {
-    bool result = pthread_mutex_destroy(&context.mutex_buff_read_data) == 0
-        && pthread_mutex_destroy(&context.mutex_buff_analyzed_data) == 0
-        && sem_destroy(&context.sem_buff_read_data_empty) == 0
-        && sem_destroy(&context.sem_buff_read_data_full) == 0
-        && sem_destroy(&context.sem_buff_analyzed_data_empty) == 0
-        && sem_destroy(&context.sem_buff_analyzed_data_full) == 0;
+void DB_DeInit() {
+    pthread_mutex_destroy(&context.mutex_buff_read_data);
+    pthread_mutex_destroy(&context.mutex_buff_analyzed_data);
+    sem_destroy(&context.sem_buff_read_data_empty);
+    sem_destroy(&context.sem_buff_read_data_full);
+    sem_destroy(&context.sem_buff_analyzed_data_empty);
+    sem_destroy(&context.sem_buff_analyzed_data_full);
 
     CB_Free();
-    return result;
 }
 
 unsigned DB_GetCoreNo() {
     return context.cores_no;
 }
 
-bool DB_AddDataToReadDataBuffer(CpuCoreData *data) {
+void DB_AddDataToReadDataBuffer(CpuCoreData *data) {
     sem_wait(&context.sem_buff_read_data_empty);
     pthread_mutex_lock(&context.mutex_buff_read_data);
 
-    bool result = CB_PushBack(data, BufferTypeReadData);
+    CB_PushBack(data, BufferTypeReadData);
 
     pthread_mutex_unlock(&context.mutex_buff_read_data);
     sem_post(&context.sem_buff_read_data_full);
-
-    return result;
 }
 
-bool DB_GetDataFromReadDataBuffer(void* destination) {
+void DB_GetDataFromReadDataBuffer(void* destination) {
     sem_wait(&context.sem_buff_read_data_full);
     pthread_mutex_lock(&context.mutex_buff_read_data);
 
-    bool result = CB_PopFront(destination, BufferTypeReadData);
+    CB_PopFront(destination, BufferTypeReadData);
 
     pthread_mutex_unlock(&context.mutex_buff_read_data);
     sem_post(&context.sem_buff_read_data_empty);
-
-    return result;
 }
 
-bool DB_AddDataToAnalyzedDataBuffer(double *data) {
+void DB_AddDataToAnalyzedDataBuffer(double *data) {
     sem_wait(&context.sem_buff_analyzed_data_empty);
     pthread_mutex_lock(&context.mutex_buff_analyzed_data);
 
-    bool result = CB_PushBack(data, BufferTypeAnalyzedData);
+    CB_PushBack(data, BufferTypeAnalyzedData);
 
     pthread_mutex_unlock(&context.mutex_buff_analyzed_data);
     sem_post(&context.sem_buff_analyzed_data_full);
-
-    return true;
 }
 
-bool DB_GetDataFromAnalyzedDataBuffer(void* destination) {
+void DB_GetDataFromAnalyzedDataBuffer(void* destination) {
     sem_wait(&context.sem_buff_analyzed_data_full);
     pthread_mutex_lock(&context.mutex_buff_analyzed_data);
 
-    bool result = CB_PopFront(destination, BufferTypeAnalyzedData);
+    CB_PopFront(destination, BufferTypeAnalyzedData);
 
     pthread_mutex_unlock(&context.mutex_buff_analyzed_data);
     sem_post(&context.sem_buff_analyzed_data_empty);
-
-    return result;
 }

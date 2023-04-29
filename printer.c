@@ -4,17 +4,12 @@
 
 #include "printer.h"
 #include "proc_stat_database.h"
-
+#include "logger.h"
 
 void Printer() {
     unsigned core_no = DB_GetCoreNo();
     double *analized_cpu_data = malloc(sizeof(double) * core_no);
-    bool result = DB_GetDataFromAnalyzedDataBuffer(analized_cpu_data);
-
-    if(result == false) {
-      printf("No data in buffer\n");
-      return;
-    }
+    DB_GetDataFromAnalyzedDataBuffer(analized_cpu_data);
 
     system("clear");
     printf("Termination command: kill -TERM %d\n\n", getpid());
@@ -25,5 +20,6 @@ void Printer() {
       printf("CPU%d: %.2f%%\n", i-1, analized_cpu_data[i]);
     }
 
+    Logger_Log("PRINTER: Data printed");
     free(analized_cpu_data);
 }

@@ -7,6 +7,7 @@
 typedef enum {
     BufferTypeReadData = 0,
     BufferTypeAnalyzedData,
+    BufferTypeLogger,
     BufferTypeLast,
 } BufferType;
 
@@ -25,11 +26,14 @@ typedef struct {
 } CpuCoreData;
 
 bool DB_Init();
-bool DB_DeInit();
+void DB_DeInit();
+
 unsigned DB_GetCoreNo();
-bool DB_AddDataToReadDataBuffer(CpuCoreData *data);
-bool DB_AddDataToAnalyzedDataBuffer(double *data);
-bool DB_GetDataFromReadDataBuffer(void* destination);
-bool DB_GetDataFromAnalyzedDataBuffer(void* destination);
+
+void DB_AddDataToReadDataBuffer(CpuCoreData *data);
+void DB_AddDataToAnalyzedDataBuffer(double *data);
+
+void DB_GetDataFromReadDataBuffer(void* destination);
+void DB_GetDataFromAnalyzedDataBuffer(void* destination);
 
 #endif  // PROC_STAT_DATABASE_H

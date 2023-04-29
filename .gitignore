@@ -3,6 +3,7 @@
 /.vscode
 /build
 .editorconfig
+*.csv
 
 # Prerequisites
 *.d

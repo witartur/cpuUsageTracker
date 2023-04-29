@@ -11,20 +11,19 @@
 #include "reader.h"
 #include "analyzer.h"
 #include "printer.h"
+#include "logger.h"
 
 static struct {
     pthread_t thread_reader;
     pthread_t thread_analyzer;
     pthread_t thread_printer;
     pthread_t thread_watchdog;
+    pthread_t thread_logger;
 
     bool reset_needed;
     pthread_mutex_t reset_flag_mutex;
 } context;
 
-static bool Deinit() {
-    return DB_DeInit();
-}
 
 static void SetResetFlag(bool state) {
     pthread_mutex_lock(&context.reset_flag_mutex);
@@ -41,14 +40,10 @@ static bool GetResetFlag() {
 }
 
 static void* ThreadReader() {
-    // int i = 0;
     while(1) {
-        // i++;
         Reader_GetProcStatFromFile();
         SetResetFlag(false);
         sleep(1);
-        // if(i == 3)
-        //     sleep(5);
     }
 }
 
@@ -68,12 +63,17 @@ static void* ThreadPrinter() {
 
 void TerminationHandler(int signal) {
     (void)signal;
+    if(signal == -1)
+        Logger_Log("MAIN: Watchdog termination");
+    else
+        Logger_Log("MAIN: User termination");
+
     pthread_cancel(context.thread_reader);
     pthread_cancel(context.thread_analyzer);
     pthread_cancel(context.thread_printer);
     pthread_cancel(context.thread_watchdog);
+    pthread_cancel(context.thread_logger);
     pthread_mutex_destroy(&context.reset_flag_mutex);
-    printf("Tread cancel completed\n");
 }
 
 static void* ThreadWatchdog() {
@@ -81,42 +81,74 @@ static void* ThreadWatchdog() {
         SetResetFlag(true);
         sleep(2);
         if(GetResetFlag() == true) {
-            TerminationHandler(0);
+            TerminationHandler(-1);
         }
     }
 }
 
+static void* ThreadLogger() {
+    while(1) {
+        Logger_SaveLogs();
+        SetResetFlag(false);
+    }
+}
+
 static bool CreateThreads() {
-    return pthread_create(&context.thread_reader, NULL, &ThreadReader, NULL) == 0
+    bool result = pthread_create(&context.thread_reader, NULL, &ThreadReader, NULL) == 0
         && pthread_create(&context.thread_analyzer, NULL, &ThreadAnalyzer, NULL) == 0
         && pthread_create(&context.thread_printer, NULL, &ThreadPrinter, NULL) == 0
         && pthread_create(&context.thread_watchdog, NULL, &ThreadWatchdog, NULL) == 0
         && pthread_mutex_init(&context.reset_flag_mutex, NULL) == 0;
+    
+    if(result == true)
+        Logger_Log("MAIN: Threads created successfully");
+    
+    return result;
+}
+
+static bool InitLogger() {
+    return Logger_Init()
+        && pthread_create(&context.thread_logger, NULL, &ThreadLogger, NULL) == 0;
 }
 
 static bool Init() {
-    return Reader_Init()
+    bool result = Reader_Init()
         && DB_Init()
-        && Analyzer_Init()
-        && CreateThreads();
+        && Analyzer_Init();
+    
+    if(result == true)
+        Logger_Log("MAIN: Components initialized successfully");
+    
+    return result;
 }
 
-int main() {
-    signal(SIGINT, TerminationHandler);
-    signal(SIGTERM, TerminationHandler);
-
-    if(Init() == false)
-        return 0;
-
+static void WaitForThreadsTermination() {
     pthread_join(context.thread_reader, NULL);
     pthread_join(context.thread_analyzer, NULL);
     pthread_join(context.thread_printer, NULL);
     pthread_join(context.thread_watchdog, NULL);
+    pthread_join(context.thread_logger, NULL);
+}
 
-    if(Deinit() == false)
+static void Deinit() {
+    DB_DeInit();
+    Logger_DeInit();
+}
+
+int main() {
+    if (InitLogger() == true)
+        Logger_Log("MAIN: Logger initialized successfully");
+
+    signal(SIGINT, TerminationHandler);
+    signal(SIGTERM, TerminationHandler);
+
+    if(Init() == false)
+       return 0;
+
+    if(CreateThreads() == false)
         return 0;
 
-    printf("Deinitilization completed\n");
-
+    WaitForThreadsTermination();
+    Deinit();
     return 1;
 }

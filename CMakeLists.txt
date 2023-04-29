@@ -22,6 +22,7 @@ add_library(
     circular_buffer.c
     printer.c
     analyzer.c
+    logger.c
 )
 add_executable(cpuTracker main.c)
 add_executable(unitTests test.c)

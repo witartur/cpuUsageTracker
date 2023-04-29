@@ -37,15 +37,13 @@ static void test_ReadElementPushedAndPopCorectly() {
     CpuCoreData *read_data_table = malloc(table_size);
     GetRandomCpuCoreDataTable(read_data_table);
 
-    bool result = CB_PushBack(read_data_table, BufferTypeReadData);
+    CB_PushBack(read_data_table, BufferTypeReadData);
     elements_no = CB_GetNoOfElements(BufferTypeReadData);
-    assert(result == true);
     assert(elements_no == 1);
 
     CpuCoreData *pop_data_table = malloc(table_size);
-    result = CB_PopFront(&pop_data_table, BufferTypeReadData);
+    CB_PopFront(&pop_data_table, BufferTypeReadData);
     elements_no = CB_GetNoOfElements(BufferTypeReadData);
-    assert(result == true);
     assert(elements_no == 0);
     assert((memcmp(read_data_table, pop_data_table, table_size) == 0));
 
@@ -62,7 +60,7 @@ static void SetCoreNoInDBContext() {
 
 static void test_CircularBuffer() {
     SetCoreNoInDBContext();
-    CB_Init();
+    CB_Init(BufferTypeReadData);
 
     test_ReadElementPushedAndPopCorectly();
 

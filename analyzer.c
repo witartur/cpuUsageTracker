@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "analyzer.h"
+#include "logger.h"
 
 static struct {
     unsigned core_no;
@@ -15,6 +16,7 @@ bool Analyzer_Init() {
     context.previous_cpu_each_core_data = malloc(sizeof(CpuCoreData) * context.core_no);
 
     if (context.previous_cpu_each_core_data == NULL) {
+        Logger_Log("ANALYZER: Init ERROR - Can't allocate memory");
         return false;
     }
 
@@ -44,12 +46,8 @@ double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
 
 void AnalyzeData() {
     CpuCoreData *cpu_data = malloc(sizeof(CpuCoreData) * context.core_no);
-    bool result = DB_GetDataFromReadDataBuffer(cpu_data);
+    DB_GetDataFromReadDataBuffer(cpu_data);
 
-    if(result == false) {
-        printf("No data in buffer\n");
-        return;
-    }
     double result_array[context.core_no];
 
     for(int i = 0; i < context.core_no; i++) {
@@ -57,6 +55,8 @@ void AnalyzeData() {
     }
 
     DB_AddDataToAnalyzedDataBuffer(result_array);
+    Logger_Log("ANALYZER: Data analyzed and stored successfully");
+
     memcpy(context.previous_cpu_each_core_data, cpu_data, context.core_no * sizeof(CpuCoreData));
     free(cpu_data);
 }
