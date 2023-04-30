@@ -5,6 +5,7 @@
 
 bool Analyzer_Init();
 void AnalyzeData();
+bool Analyzer_DeInit();
 
 // for utests
 double Calculate(CpuCoreData prev_element, CpuCoreData new_element);

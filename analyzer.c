@@ -24,6 +24,10 @@ bool Analyzer_Init() {
     return true;
 }
 
+bool Analyzer_DeInit() {
+    free(context.previous_cpu_each_core_data);
+}
+
 double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
     unsigned long prev_idle = prev_element.idle + prev_element.iowait;
     unsigned long idle = new_element.idle + new_element.iowait;

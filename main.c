@@ -133,6 +133,7 @@ static void WaitForThreadsTermination() {
 static void Deinit() {
     DB_DeInit();
     Logger_DeInit();
+    Analyzer_DeInit();
 }
 
 int main() {

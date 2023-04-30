@@ -5,6 +5,8 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 
+set(CMAKE_C_FLAGS "-ggdb3")
+
 if ("$ENV{CC}" MATCHES "clang")
   set(CMAKE_C_COMPILER clang)
 elseif ("$ENV{CC}" MATCHES "gcc")
