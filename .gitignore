@@ -5,6 +5,7 @@
 .editorconfig
 *.csv
 *.txt
+!CMakeLists.txt
 
 
 # Prerequisites
