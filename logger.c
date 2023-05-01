@@ -59,14 +59,7 @@ static void AddDataToLoggerBuffer(char *data) {
     sem_post(&context.sem_buff_logger_full);
 }
 
-bool Logger_Init() {
-    bool result = CB_Init(BufferTypeLogger)
-        && pthread_mutex_init(&context.mutex_buff_logger, NULL) == 0
-        && sem_init(&context.sem_buff_logger_empty, 0, BUFFER_SIZE) == 0
-        && sem_init(&context.sem_buff_logger_full, 0, 0) == 0;
-
-    printf("CB init: %d", result);
-
+static bool CreateLogFile() {
     FILE* log_file;
     log_file = fopen(FILELOCATION, "w");
 
@@ -81,6 +74,16 @@ bool Logger_Init() {
     return true;
 }
 
+bool Logger_Init() {
+    bool result = CB_Init(BufferTypeLogger)
+        && pthread_mutex_init(&context.mutex_buff_logger, NULL) == 0
+        && sem_init(&context.sem_buff_logger_empty, 0, BUFFER_SIZE) == 0
+        && sem_init(&context.sem_buff_logger_full, 0, 0) == 0
+        && CreateLogFile();
+
+    return result;  
+}
+
 void Logger_DeInit() {
     pthread_mutex_destroy(&context.mutex_buff_logger);
     sem_destroy(&context.sem_buff_logger_empty);
@@ -90,10 +93,11 @@ void Logger_DeInit() {
 void Logger_Log(char *log_message) {
     char log_timestamp[32] = {0};
     GetTimeStamp(log_timestamp);
+    char comma[] = ",";
 
     char log[MAX_MSG_SIZE] = {0};
     strncpy(log, log_message, strlen(log_message));
-    strncat(log, ",", sizeof(","));
+    strncat(log, comma, strlen(comma));
     strncat(log, log_timestamp, strlen(log_timestamp)); 
     
     AddDataToLoggerBuffer(log);

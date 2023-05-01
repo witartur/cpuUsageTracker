@@ -17,7 +17,7 @@ static void PrintToTerminal(double *analized_cpu_data, unsigned core_no) {
   }
 }
 
-void Printer() {
+void Printer_Print() {
   unsigned core_no = DB_GetCoreNo();
   double analized_cpu_data[core_no];
 

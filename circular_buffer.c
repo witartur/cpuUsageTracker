@@ -40,6 +40,7 @@ bool CB_Init(BufferType buffer_type) {
     case BufferTypeLast:
         return false;
     }
+    return false;
 }
 
 void CB_Free() {

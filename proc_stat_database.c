@@ -32,7 +32,8 @@ bool DB_Init() {
 
     context.cores_no = Reader_GetCoreNo();
     
-    result = CB_Init(BufferTypeReadData) && CB_Init(BufferTypeAnalyzedData);
+    result = CB_Init(BufferTypeReadData)
+        && CB_Init(BufferTypeAnalyzedData);
 
     if(result == false)
         Logger_Log("DB: Init Error, Can't allocate buffer memory");

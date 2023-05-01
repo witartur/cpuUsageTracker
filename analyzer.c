@@ -49,7 +49,7 @@ double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
     return cpu_percentage;
 }
 
-void AnalyzeData() {
+void Analyzer_AnalyzeData() {
     CpuCoreData cpu_data[context.core_no];
     DB_GetDataFromReadDataBuffer(cpu_data);
 

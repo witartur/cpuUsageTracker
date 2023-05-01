@@ -38,28 +38,6 @@ static bool GetResetFlag() {
     return state;
 }
 
-static void* ThreadReader() {
-    while(1) {
-        Reader_GetProcStatFromFile();
-        SetResetFlag(false);
-        sleep(1);
-    }
-}
-
-static void* ThreadAnalyzer() {
-    while(1) {
-        AnalyzeData();
-        SetResetFlag(false);
-    }
-}
-
-static void* ThreadPrinter() {
-    while (1) {
-        Printer();
-        SetResetFlag(false);
-    }
-}
-
 static void TerminationHandler(int signal) {
     (void)signal;
     if(signal == -1)
@@ -75,6 +53,31 @@ static void TerminationHandler(int signal) {
     pthread_mutex_destroy(&context.reset_flag_mutex);
 }
 
+static void* ThreadReader() {
+    while(1) {
+        Reader_GetProcStatFromFile();
+        SetResetFlag(false);
+        sleep(1);
+    }
+    return 0;
+}
+
+static void* ThreadAnalyzer() {
+    while(1) {
+        Analyzer_AnalyzeData();
+        SetResetFlag(false);
+    }
+    return 0;
+}
+
+static void* ThreadPrinter() {
+    while (1) {
+        Printer_Print();
+        SetResetFlag(false);
+    }
+    return 0;
+}
+
 static void* ThreadWatchdog() {
     while(1) {
         SetResetFlag(true);
@@ -83,6 +86,7 @@ static void* ThreadWatchdog() {
             TerminationHandler(-1);
         }
     }
+    return 0;
 }
 
 static void* ThreadLogger() {
@@ -90,6 +94,7 @@ static void* ThreadLogger() {
         Logger_SaveLogs();
         SetResetFlag(false);
     }
+    return 0;
 }
 
 static bool CreateThreads() {
@@ -101,22 +106,15 @@ static bool CreateThreads() {
     
     if(result == true)
         Logger_Log("MAIN: Threads created successfully");
-    
     return result;
 }
 
 static bool InitLogger() {
-    return Logger_Init()
+    bool result = Logger_Init()
         && pthread_create(&context.thread_logger, NULL, &ThreadLogger, NULL) == 0;
-}
-
-static bool Init() {
-    bool result = Reader_Init()
-        && DB_Init()
-        && Analyzer_Init();
     
-    if(result == true)
-        Logger_Log("MAIN: Components initialized successfully");
+    if (result == true)
+        Logger_Log("MAIN: Logger initialized successfully");
     
     return result;
 }
@@ -129,6 +127,17 @@ static void WaitForThreadsTermination() {
     pthread_join(context.thread_logger, NULL);
 }
 
+static bool Init() {
+    bool result = Reader_Init()
+        && DB_Init()
+        && Analyzer_Init();
+    
+    if(result == true)
+        Logger_Log("MAIN: All components initialized successfully");
+    
+    return result;
+}
+
 static void Deinit() {
     DB_DeInit();
     Logger_DeInit();
@@ -136,8 +145,8 @@ static void Deinit() {
 }
 
 int main() {
-    if (InitLogger() == true)
-        Logger_Log("MAIN: Logger initialized successfully");
+    if (InitLogger() == false)
+        return 0;
 
     signal(SIGINT, TerminationHandler);
     signal(SIGTERM, TerminationHandler);

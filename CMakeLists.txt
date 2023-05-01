@@ -9,7 +9,7 @@ if("$ENV{CC}" MATCHES "clang")
   set(CMAKE_C_FLAGS "-Weverything")
 elseif ("$ENV{CC}" MATCHES "gcc")
   set(CMAKE_C_COMPILER gcc)
-  set(CMAKE_C_FLAGS "-ggdb3 -Wextra")
+  set(CMAKE_C_FLAGS "-ggdb3 -Wall")
 endif()
 
 # set(CMAKE_THREAD_LIBS_INIT)

@@ -4,7 +4,7 @@
 #include "proc_stat_database.h"
 
 bool Analyzer_Init(void);
-void AnalyzeData(void);
+void Analyzer_AnalyzeData(void);
 void Analyzer_DeInit(void);
 
 // for utests
