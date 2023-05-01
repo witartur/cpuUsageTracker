@@ -14,16 +14,15 @@
 #include "logger.h"
 
 static struct {
+    bool reset_needed;
+    bool padding0[7];
     pthread_t thread_reader;
     pthread_t thread_analyzer;
     pthread_t thread_printer;
     pthread_t thread_watchdog;
     pthread_t thread_logger;
-
-    bool reset_needed;
     pthread_mutex_t reset_flag_mutex;
 } context;
-
 
 static void SetResetFlag(bool state) {
     pthread_mutex_lock(&context.reset_flag_mutex);
@@ -61,7 +60,7 @@ static void* ThreadPrinter() {
     }
 }
 
-void TerminationHandler(int signal) {
+static void TerminationHandler(int signal) {
     (void)signal;
     if(signal == -1)
         Logger_Log("MAIN: Watchdog termination");

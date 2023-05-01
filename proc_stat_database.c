@@ -10,6 +10,7 @@
 
 static struct {
     unsigned cores_no;
+    int padding0;
     pthread_mutex_t mutex_buff_read_data;
     pthread_mutex_t mutex_buff_analyzed_data;
     sem_t sem_buff_read_data_empty;

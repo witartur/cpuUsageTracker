@@ -9,7 +9,7 @@
 static void GetRandomCpuCoreDataTable(CpuCoreData* destination) {
     unsigned cores_no = DB_GetCoreNo();
 
-    for(int i = 0; i < cores_no; i++) {
+    for(int i = 0; i < (int) cores_no; i++) {
         CpuCoreData element = {
             .cpu_id = i,
             .user = 96464,
@@ -29,10 +29,10 @@ static void GetRandomCpuCoreDataTable(CpuCoreData* destination) {
 }
 
 static void test_ReadElementPushedAndPopCorectly() {
-    int elements_no = CB_GetNoOfElements(BufferTypeReadData);
+    size_t elements_no = CB_GetNoOfElements(BufferTypeReadData);
     assert(elements_no == 0);
 
-    size_t table_size = DB_GetCoreNo() * sizeof(CpuCoreData);
+    size_t table_size = (size_t) (DB_GetCoreNo() * sizeof(CpuCoreData));
 
     CpuCoreData *read_data_table = malloc(table_size);
     GetRandomCpuCoreDataTable(read_data_table);

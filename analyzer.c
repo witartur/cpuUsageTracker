@@ -8,6 +8,7 @@
 
 static struct {
     unsigned core_no;
+    int padding0;
     CpuCoreData *previous_cpu_each_core_data;
 } context = {0};
 
@@ -24,7 +25,7 @@ bool Analyzer_Init() {
     return true;
 }
 
-bool Analyzer_DeInit() {
+void Analyzer_DeInit() {
     free(context.previous_cpu_each_core_data);
 }
 
@@ -54,7 +55,7 @@ void AnalyzeData() {
 
     double result_array[context.core_no];
 
-    for(int i = 0; i < context.core_no; i++) {
+    for(unsigned i = 0; i < context.core_no; i++) {
         result_array[i] = Calculate(context.previous_cpu_each_core_data[i], cpu_data[i]);
     }
 

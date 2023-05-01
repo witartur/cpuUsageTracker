@@ -3,9 +3,9 @@
 
 #include "proc_stat_database.h"
 
-bool Analyzer_Init();
-void AnalyzeData();
-bool Analyzer_DeInit();
+bool Analyzer_Init(void);
+void AnalyzeData(void);
+void Analyzer_DeInit(void);
 
 // for utests
 double Calculate(CpuCoreData prev_element, CpuCoreData new_element);

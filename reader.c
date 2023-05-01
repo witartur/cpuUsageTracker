@@ -13,7 +13,7 @@ static struct {
 } context;
 
 static bool IsEndOfFile(FILE *file, char *read_line, size_t length) {
-    if (fgets(read_line, length, file) == NULL)
+    if (fgets(read_line, (int) length, file) == NULL)
         return true;
 
     return false;
@@ -103,6 +103,8 @@ bool Reader_GetProcStatFromFile() {
             &temp_array[index].steal,
             &temp_array[index].guest,
             &temp_array[index].guest_nice);
+        if(result < 11)
+            Logger_Log("READER: ERROR reading cpu parameters");
 
         core_index++;
     }

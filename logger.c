@@ -10,7 +10,7 @@
 #include "proc_stat_database.h"
 #include "circular_buffer.h"
 
-#define FILELOCATION "/home/artur/REPOS/C/CPU_usage_tracker/cpuUsageTracker/logger.csv"
+#define FILELOCATION "logger.csv"
 
 static struct {
     pthread_mutex_t mutex_buff_logger;

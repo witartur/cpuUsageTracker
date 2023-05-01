@@ -4,13 +4,14 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED On)
 set(CMAKE_C_EXTENSIONS Off)
 
-set(CMAKE_C_FLAGS "-ggdb3")
-
-if ("$ENV{CC}" MATCHES "clang")
+if("$ENV{CC}" MATCHES "clang")
   set(CMAKE_C_COMPILER clang)
+  set(CMAKE_C_FLAGS "-Weverything")
 elseif ("$ENV{CC}" MATCHES "gcc")
   set(CMAKE_C_COMPILER gcc)
+  set(CMAKE_C_FLAGS "-ggdb3 -Wextra")
 endif()
+
 # set(CMAKE_THREAD_LIBS_INIT)
 # set(MAKE_USE_PTHREADS_INIT)
 add_library(

@@ -6,6 +6,7 @@
 
 typedef struct {
     BufferType name;
+    int padding0;
     void *buffer;
     void *buffer_end;
     size_t max_no_of_elements;
@@ -16,11 +17,11 @@ typedef struct {
 } CircularBuffer;
 
 bool CB_Init(BufferType buffer_type);
-void CB_Free();
+void CB_Free(void);
 void CB_PushBack(void *element, BufferType buffer_type);
 void CB_PopFront(void *element, BufferType buffer_type);
 
 // for utests
-int CB_GetNoOfElements(BufferType buffer_type);
+size_t CB_GetNoOfElements(BufferType buffer_type);
 
 #endif  // CIRCULAR_BUFFER_H

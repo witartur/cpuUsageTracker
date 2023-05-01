@@ -13,6 +13,7 @@ typedef enum {
 
 typedef struct {
     int cpu_id;
+    int padding0;
     unsigned long user;
     unsigned long nice;
     unsigned long system;
@@ -25,10 +26,10 @@ typedef struct {
     unsigned long guest_nice;
 } CpuCoreData;
 
-bool DB_Init();
-void DB_DeInit();
+bool DB_Init(void);
+void DB_DeInit(void);
 
-unsigned DB_GetCoreNo();
+unsigned DB_GetCoreNo(void);
 
 void DB_AddDataToReadDataBuffer(CpuCoreData *data);
 void DB_AddDataToAnalyzedDataBuffer(double *data);

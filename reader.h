@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-bool Reader_Init();
-unsigned Reader_GetCoreNo();
-bool Reader_GetProcStatFromFile();
+bool Reader_Init(void);
+unsigned Reader_GetCoreNo(void);
+bool Reader_GetProcStatFromFile(void);
 
 #endif //READER_H

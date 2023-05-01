@@ -37,7 +37,7 @@ bool CB_Init(BufferType buffer_type) {
     case BufferTypeLogger:
         InitSingleBuffer(&context.buffersTable[BufferTypeLogger], MAX_MSG_SIZE * sizeof(char));
         return true;
-    default:
+    case BufferTypeLast:
         return false;
     }
 }
@@ -74,6 +74,6 @@ void CB_PopFront(void *element, BufferType buffer_type) {
 }
 
 // for utests
-int CB_GetNoOfElements(BufferType buffer_type) {
+size_t CB_GetNoOfElements(BufferType buffer_type) {
     return context.buffersTable[buffer_type].no_of_elements;
 }
