@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -9,8 +8,6 @@
 #include "proc_stat_database.h"
 #include "printer.h"
 #include "logger.h"
-
-#define BUFFER_READ 1
 static struct {
     unsigned core_no;
 } context;

@@ -49,7 +49,7 @@ double Calculate(CpuCoreData prev_element, CpuCoreData new_element) {
 }
 
 void AnalyzeData() {
-    CpuCoreData *cpu_data = malloc(sizeof(CpuCoreData) * context.core_no);
+    CpuCoreData cpu_data[context.core_no];
     DB_GetDataFromReadDataBuffer(cpu_data);
 
     double result_array[context.core_no];
@@ -62,5 +62,4 @@ void AnalyzeData() {
     Logger_Log("ANALYZER: Data analyzed and stored successfully");
 
     memcpy(context.previous_cpu_each_core_data, cpu_data, context.core_no * sizeof(CpuCoreData));
-    free(cpu_data);
 }
