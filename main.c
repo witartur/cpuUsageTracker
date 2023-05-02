@@ -94,7 +94,6 @@ static void* ThreadLogger() {
         Logger_SaveLogs();
         SetResetFlag(false);
     }
-    return 0;
 }
 
 static bool CreateThreads() {
